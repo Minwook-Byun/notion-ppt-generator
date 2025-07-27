@@ -14,7 +14,7 @@ requests==2.31.0
 pandas==2.0.3
 
 # JSON/Data Handling
-jsonschema==4.19.0
+jsonschema==4.20.0
 
 # File Handling
 pathlib2==2.3.7
