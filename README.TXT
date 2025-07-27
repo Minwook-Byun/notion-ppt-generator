@@ -2,18 +2,28 @@
 
 **Automatically generate PowerPoint presentations from Notion pages using local templates!**
 
-A Flask web server that automatically creates presentations by leveraging local PowerPoint templates and extracting data from Notion pages.
+An MCP (Model Context Protocol) server that automatically creates presentations by leveraging local PowerPoint templates and extracting data from Notion pages. Perfect for Claude Desktop integration and AI-powered workflows.
 
 ## ✨ Features
 
+- 🤖 **MCP Server**: Seamless integration with Claude Desktop and AI agents
 - 🔗 **Notion Integration**: Complete auto-generation from a single Notion URL
 - 📊 **Table Conversion**: Notion database → PowerPoint table automation
 - 🎨 **Style Guide**: Automatic color theme and font styling
 - 📋 **Template System**: Utilizes local PowerPoint templates
 - 🔄 **Slide Duplication**: Template-based multi-slide generation
 - 💾 **Auto Save**: Automatic presentation saving and management
+- 🌍 **Multilingual**: Supports both Korean and English Notion pages
 
 ## 🏗️ System Architecture
+
+### MCP Server Design
+
+This project is built as an **MCP (Model Context Protocol) server**, enabling:
+- **Direct integration with Claude Desktop**
+- **AI agent automation** - "Create a PPT from this Notion page"
+- **JSON-RPC communication** for efficient data exchange
+- **Tool-based architecture** with discoverable functions
 
 ### Local Template Utilization
 
@@ -50,6 +60,11 @@ Slide 1: Title Slide
 pip install -r requirements.txt
 ```
 
+**Key Dependencies:**
+- `mcp>=1.0.0` - MCP server framework
+- `python-pptx>=0.6.21` - PowerPoint processing
+- `notion-client>=2.2.1` - Notion API integration
+
 ### 2. Template Preparation
 
 Place PowerPoint templates locally:
@@ -61,13 +76,29 @@ mkdir -p ~/Desktop/Templates
 cp your_template.pptx ~/Desktop/Templates/
 ```
 
-### 3. Run Server
+### 3. Run MCP Server
 
 ```bash
 python enhanced_ppt_server.py
 ```
 
-Server runs at `http://localhost:8000`
+### 4. Claude Desktop Integration
+
+Add to your Claude Desktop MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "notion-ppt-generator": {
+      "command": "python",
+      "args": ["path/to/enhanced_ppt_server.py"],
+      "env": {
+        "NOTION_TOKEN": "your-notion-token"
+      }
+    }
+  }
+}
+```
 
 ## 📋 Template Setup Guide
 
@@ -84,45 +115,43 @@ Server runs at `http://localhost:8000`
 
 ### Template Validation
 
-```bash
-# Scan templates
-curl http://localhost:8000/scan-templates
-
-# List available templates
-curl http://localhost:8000/list-templates
+In Claude Desktop, you can now ask:
+```
+"Scan for available PowerPoint templates"
+"List all templates in my system"
 ```
 
 ## 🔗 Notion Integration Setup
 
 ### Notion Page Structure
 
-For auto-generation, Notion pages should follow this structure:
+For auto-generation, Notion pages should follow this structure (supports both Korean and English):
 
 ```markdown
-## 🔧 Basic Settings
-**Project Name:** K-Camp Jeju 3rd Introduction
-**Template:** MYSC_Sample_Template
-**Font:** Pretendard
-**Total Slides:** 5
+## 🔧 Basic Settings / 기본 설정
+**Project Name / 프로젝트명:** K-Camp Jeju 3rd Introduction
+**Template / 템플릿:** MYSC_Sample_Template
+**Font / 폰트:** Pretendard
+**Total Slides / 총 슬라이드 수:** 5
 
-## 🎨 Style Guide
-**Main Color:** #1E3A8A
-**Accent Color:** #F97316
-**Background Color:** #F8FAFC
+## 🎨 Style Guide / 스타일 가이드
+**Main Color / 메인 컬러:** #1E3A8A
+**Accent Color / 강조 컬러:** #F97316
+**Background Color / 배경 컬러:** #F8FAFC
 
-**Font Settings:**
-- **Title:** Pretendard, 24pt, Bold
-- **Body:** Pretendard, 14pt
-- **Caption:** Pretendard, 12pt
+**Font Settings / 폰트 설정:**
+- **Title / 제목:** Pretendard, 24pt, Bold
+- **Body / 본문:** Pretendard, 14pt
+- **Caption / 캡션:** Pretendard, 12pt
 
-## 📊 Slide Configuration
+## 📊 Slide Configuration / 슬라이드 구성
 [Notion Database]
 | Slide | Chapter | Title | Contents | Layout_Type |
 |-------|---------|-------|----------|-------------|
 | 1     | Chapter 1 | Project Intro | Content... | title_slide |
 | 2     | Chapter 2 | Main Features | Content... | content_slide |
 
-## 📋 Table Data (Optional)
+## 📋 Table Data / 표 데이터 (Optional)
 [Notion Database]
 | Table_ID | Parent_Slide | Row | Column | Cell_Value | Header_Type |
 |----------|--------------|-----|--------|------------|-------------|
@@ -130,54 +159,55 @@ For auto-generation, Notion pages should follow this structure:
 | table1   | 2           | 1   | 2      | Description| column_header |
 ```
 
-## 🛠️ API Usage
+## 🤖 Usage with Claude Desktop
 
-### Basic Template Operations
+### Natural Language Commands
 
-```bash
-# Create presentation from template
-curl -X POST http://localhost:8000/create-from-template \
-  -H "Content-Type: application/json" \
-  -d '{
-    "template_name": "MYSC_Sample_Template",
-    "title": "New Presentation"
-  }'
+Once integrated with Claude Desktop, you can use natural language:
 
-# Update slide content
-curl -X POST http://localhost:8000/update-slide \
-  -H "Content-Type: application/json" \
-  -d '{
-    "slide_number": 1,
-    "chapter": "Chapter 1",
-    "title": "Project Introduction",
-    "contents": "Detailed content..."
-  }'
+```
+"Create a PowerPoint from this Notion page: [URL]"
+"Generate slides using the MYSC template with chapter 'Introduction'"
+"Duplicate slide 1 and update it with new content"
+"Apply blue theme colors to my presentation"
+"Save the current presentation as 'Q4_Report'"
 ```
 
-### Notion-based Auto Generation
+### Available MCP Tools
 
-```bash
-# Complete auto-generation from Notion URL
-curl -X POST http://localhost:8000/auto-generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "notion_url": "https://notion.so/your-page-url"
-  }'
+- `scan_templates()` - Discover available PowerPoint templates
+- `auto_generate_from_notion_url(notion_url)` - Complete automation
+- `clone_template_and_update(template_name, chapter, title, contents)` - Template cloning
+- `duplicate_slide(slide_number, new_title, new_content, new_chapter)` - Slide duplication
+- `apply_color_theme(color_palette)` - Theme application
+- `save_presentation(filename)` - File saving
+- `validate_notion_structure(notion_url)` - Structure validation
+
+## 🛠️ Advanced MCP Features
+
+### Automated Workflows
+
+```python
+# Example: Complete automation workflow
+def create_presentation_workflow(notion_url):
+    # 1. Validate Notion structure
+    validation = validate_notion_structure(notion_url)
+    
+    # 2. Auto-generate if valid
+    if "PPT auto-generation possible" in validation:
+        result = auto_generate_from_notion_url(notion_url)
+        return result
+    else:
+        return "Please fix Notion page structure first"
 ```
 
-### File Management
+### Error Handling & Fallbacks
 
-```bash
-# Save presentation
-curl -X POST http://localhost:8000/save \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filename": "my_presentation"
-  }'
-
-# List saved files
-curl http://localhost:8000/presentations
-```
+The MCP server includes robust error handling:
+- **Import errors**: Automatic fallback to minimal MCP implementation
+- **Template issues**: Clear error messages with suggestions
+- **Notion connectivity**: Graceful degradation when API unavailable
+- **File permissions**: Helpful troubleshooting guidance
 
 ## ⚙️ Configuration
 
@@ -202,38 +232,51 @@ TEMPLATE_PATHS = {
 }
 ```
 
-## 🔧 Advanced Features
+### MCP Server Configuration
 
-### Slide Duplication
+Customize server behavior:
 
-```bash
-# Duplicate first slide to create new slide
-curl -X POST http://localhost:8000/duplicate-slide \
-  -H "Content-Type: application/json" \
-  -d '{
-    "slide_number": 1,
-    "new_title": "New Slide Title",
-    "new_content": "New content",
-    "new_chapter": "Chapter 2"
-  }'
+```python
+# Server initialization with error handling
+try:
+    mcp = FastMCP("Enhanced PowerPoint MCP Server")
+except Exception as e:
+    # Fallback to minimal implementation
+    mcp = MinimalMCP("Enhanced PowerPoint MCP Server")
 ```
 
-### Color Theme Application
+## 🔧 Compatibility & Requirements
 
-```bash
-# Apply color theme to presentation
-curl -X POST http://localhost:8000/apply-theme \
-  -H "Content-Type: application/json" \
-  -d '{
-    "colors": {
-      "main": "#1E3A8A",
-      "accent": "#F97316",
-      "background": "#F8FAFC"
-    }
-  }'
-```
+### MCP Compatibility
+
+- **MCP Version**: 1.0.0+ supported
+- **FastMCP**: Primary implementation with fallback support
+- **JSON-RPC**: Standard MCP communication protocol
+- **Claude Desktop**: Fully compatible
+
+### System Requirements
+
+- **Python**: 3.8+ recommended
+- **PowerPoint**: Not required (uses python-pptx)
+- **Memory**: 512MB+ available RAM
+- **Storage**: 100MB+ for templates and output
+- **Network**: Required for Notion API access
+
+### Platform Support
+
+- ✅ **Windows 10/11**
+- ✅ **macOS 10.14+**
+- ✅ **Linux (Ubuntu 18.04+)**
+- ✅ **Docker containers**
 
 ## ⚠️ Important Notes
+
+### MCP Server Considerations
+
+- **Local Only**: Requires local file system access for templates
+- **Claude Desktop**: Best experience when integrated with Claude Desktop
+- **Session Management**: Presentations persist during MCP session
+- **Concurrent Access**: Single-user design (not multi-tenant)
 
 ### Template Requirements
 
@@ -241,54 +284,83 @@ curl -X POST http://localhost:8000/apply-theme \
 - **Template Structure**: Text boxes in templates must contain keywords "Chapter", "Title", "Contents"
 - **File Permissions**: Read access to template folders is required
 
-### System Requirements
-
-- **PowerPoint Not Required**: Uses python-pptx library, no PowerPoint installation needed
-- **Memory Usage**: Be mindful of memory usage when processing large template files
-- **File Size Limits**: Upload/download file size limitations apply
-
 ### Security
 
-- **Local Environment Recommended**: Current version is for local development/testing
-- **Production Deployment**: Additional security settings needed (authentication, HTTPS, file access restrictions, etc.)
+- **Local Environment**: Designed for local development and personal use
+- **File Access**: Requires read/write permissions for template and output directories
+- **Notion API**: Store API keys securely in environment variables
+- **Network**: Only connects to Notion API, no other external services
 
 ## 🐛 Troubleshooting
 
-### Template Not Found
+### MCP Server Issues
 
 ```bash
-# Verify with template scan
-curl http://localhost:8000/scan-templates
+# Check MCP compatibility
+python -c "from mcp.server.fastmcp import FastMCP; print('MCP OK')"
 
-# Check template file locations
-ls ~/Desktop/Templates/
-ls "C:/Templates/PowerPoint/"
+# Test server startup
+python enhanced_ppt_server.py
+```
+
+### Template Discovery Problems
+
+Ask Claude:
+```
+"Scan for templates and show me what's available"
+"Why can't you find my PowerPoint templates?"
 ```
 
 ### Notion Integration Errors
 
-- Verify Notion connector is activated
-- Validate Notion page structure:
-
-```bash
-curl -X POST http://localhost:8000/validate-notion \
-  -H "Content-Type: application/json" \
-  -d '{"notion_url": "your-notion-url"}'
+- Verify Notion connector is activated in Claude Desktop
+- Check Notion page structure:
+```
+"Validate this Notion page structure: [URL]"
 ```
 
 ### Memory Issues
 
-- Check template file sizes
-- Limit concurrent slide processing
-- Restart server
+- Check template file sizes (keep under 50MB)
+- Restart Claude Desktop if experiencing slowdowns
+- Clear temp files in `~/Desktop/MyPPT/`
 
-## 🔮 Future Plans
+## 🚀 Deployment Options
 
-- [ ] Support for more template layouts
-- [ ] Automatic image insertion
-- [ ] Auto chart/graph generation
-- [ ] Template marketplace integration
-- [ ] Cloud storage integration
+### Local Development
+
+```bash
+git clone https://github.com/yourusername/notion-ppt-generator
+cd notion-ppt-generator
+pip install -r requirements.txt
+python enhanced_ppt_server.py
+```
+
+### Claude Desktop Integration
+
+1. Clone repository
+2. Add to Claude Desktop MCP configuration
+3. Restart Claude Desktop
+4. Test with: "What PowerPoint tools are available?"
+
+### Docker Deployment
+
+```dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
+CMD ["python", "enhanced_ppt_server.py"]
+```
+
+## 🔮 Future Roadmap
+
+- [ ] **Enhanced Template Support**: More layout types and design options
+- [ ] **Image Integration**: Automatic image insertion from Notion
+- [ ] **Chart Generation**: Convert Notion databases to PowerPoint charts
+- [ ] **Team Collaboration**: Multi-user template sharing
+- [ ] **Cloud Templates**: Remote template repositories
+- [ ] **Advanced Animations**: Slide transition and animation support
 
 ## 📄 License
 
@@ -306,9 +378,10 @@ MIT License - Feel free to use, modify, and distribute.
 
 If you encounter any issues or have questions:
 
-1. Check the troubleshooting section above
-2. Open an issue on GitHub
-3. Provide detailed error messages and system information
+1. **GitHub Issues**: Open an issue with detailed information
+2. **MCP Compatibility**: Check Claude Desktop MCP documentation
+3. **Notion API**: Verify your Notion integration setup
+4. **Template Problems**: Ensure templates follow required structure
 
 ---
 
@@ -316,19 +389,31 @@ If you encounter any issues or have questions:
 
 ## 🛠️ Technical Stack
 
-- **Backend**: Flask (Python)
+- **MCP Framework**: FastMCP with fallback support
+- **Backend**: Python 3.8+
 - **PowerPoint Processing**: python-pptx
-- **Notion Integration**: Notion API
-- **Template Engine**: Custom template processing
-- **File Management**: Local file system
+- **Notion Integration**: Notion API client
+- **Template Engine**: Custom template processing with multilingual support
+- **File Management**: Local file system with automatic organization
+- **Error Handling**: Comprehensive fallback mechanisms
 
 ## 📊 Example Use Cases
 
-- **Business Presentations**: Transform Notion project docs into professional slides
-- **Educational Content**: Convert lesson plans to presentation format
-- **Reports**: Turn data analysis notes into visual presentations
-- **Project Updates**: Automatically generate status presentations from project databases
+- **AI-Powered Presentations**: "Claude, turn my project notes into a presentation"
+- **Automated Reporting**: Convert Notion databases to executive summaries
+- **Educational Content**: Transform lesson plans into engaging slides
+- **Business Workflows**: Streamline pitch deck creation from project docs
+- **Team Updates**: Auto-generate status presentations from sprint notes
+
+## 🌟 Why Choose This MCP Server?
+
+- **AI-First Design**: Built specifically for Claude Desktop integration
+- **Local Control**: Your templates and data stay on your machine
+- **Extensible**: Easy to customize and extend functionality
+- **Robust**: Production-ready error handling and fallbacks
+- **Multilingual**: Works with both Korean and English content
+- **Template-Focused**: Leverages your existing PowerPoint designs
 
 ---
 
-*This is an experimental project. For production use, please implement additional security measures and testing.*
+*This MCP server represents the cutting edge of AI-powered presentation generation. By combining Notion's organizational power with PowerPoint's presentation capabilities, it creates a seamless workflow for modern knowledge workers.*

@@ -1,6 +1,5 @@
-# Core Web Framework
-Flask==2.3.3
-Flask-CORS==4.0.0
+# MCP Server Framework (Fixed version for compatibility)
+mcp==0.1.0
 
 # PowerPoint Processing
 python-pptx==0.6.21
