@@ -1,5 +1,5 @@
-# MCP Server Framework (Fixed version for compatibility)
-mcp==0.1.0
+# MCP Server Framework (Latest stable version)
+mcp==1.12.2
 
 # PowerPoint Processing
 python-pptx==0.6.21
@@ -33,10 +33,3 @@ loguru==0.7.2
 
 # Type Hints Support (for older Python versions)
 typing-extensions==4.7.1
-
-# Development Dependencies (optional)
-# Uncomment for development
-# pytest==7.4.2
-# pytest-flask==1.2.0
-# black==23.7.0
-# flake8==6.0.0
