@@ -1,5 +1,7 @@
 # Notion PowerPoint Generator 🎯
 
+[![smithery badge](https://smithery.ai/badge/@Minwook-Byun/notion-ppt-generator)](https://smithery.ai/server/@Minwook-Byun/notion-ppt-generator)
+
 **Automatically generate PowerPoint presentations from Notion pages using local templates!**
 
 A Flask web server that automatically creates presentations by leveraging local PowerPoint templates and extracting data from Notion pages.
@@ -43,6 +45,14 @@ Slide 1: Title Slide
 - `.potx` (PowerPoint Template)
 
 ## 🚀 Installation & Setup
+
+### Installing via Smithery
+
+To install Notion PowerPoint Generator for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@Minwook-Byun/notion-ppt-generator):
+
+```bash
+npx -y @smithery/cli install @Minwook-Byun/notion-ppt-generator --client claude
+```
 
 ### 1. Environment Setup
 
